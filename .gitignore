@@ -28,3 +28,4 @@ yarn-error.log*
 /blob-report/
 /playwright/.cache/
 .vercel
+aptrs-react.code-workspace

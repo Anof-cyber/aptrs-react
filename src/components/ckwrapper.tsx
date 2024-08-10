@@ -1,49 +1,86 @@
-import '../../packages/ckeditor5/styles.css'
+import React, { useEffect, useRef } from 'react';
+import {
+    ClassicEditor,
+    Essentials,
+    CKFinderUploadAdapter,
+    Autoformat,
+    Bold,
+    Italic,
+    BlockQuote,
+    Heading,
+    Indent,
+    Link,
+    List,
+    Paragraph,
+    Table
+} from 'ckeditor5';
 
-import { CKEditor } from '@ckeditor/ckeditor5-react'
+import 'ckeditor5/ckeditor5.css';
 
-import {simpleUploadConfig} from '../lib/data/api'
+class Editor extends ClassicEditor {
+    static builtinPlugins = [
+        Essentials,
+        CKFinderUploadAdapter,
+        Autoformat,
+        Bold,
+        Italic,
+        BlockQuote,
+        Heading,
+        Indent,
+        Link,
+        List,
+        Paragraph,
+        Table
+    ];
 
-let ClassicEditor: any = {
-  getData: () => {return 'test'},
-  setData: (data: string) => {return data}
-}
-if(import.meta.env.VITE_APP_ENV !='testing'){
-  import('ckeditor5-custom-build/build/ckeditor').then(module => {
-    ClassicEditor = module.default;
-  });
+    static defaultConfig = {
+        toolbar: {
+            items: [
+                'undo', 'redo',
+                '|', 'heading',
+                '|', 'bold', 'italic',
+                '|', 'link', 'insertTable', 'blockQuote',
+                '|', 'bulletedList', 'numberedList', 'outdent', 'indent'
+            ]
+        },
+        language: 'en'
+    };
 }
 
-interface CKEditorProps {
-  id: string;
-  data: string;
-  onChange: (event: any, editor: any) => void; // You should replace 'any' with the actual type of the event and editor
-  onReady?: (editor: any) => void; // You should replace 'any' with the actual type of the editor
-}
-export const CKWrapper = (props: CKEditorProps) => {
-  const { id, data, onChange, onReady } = props;
-  return (
-    
-    <CKEditor
-      id={id}
-      data = {data}
-      editor={ClassicEditor}
-      onChange={(event, editor) => {
-        onChange(String(id), editor.getData());
-      }}
-      onReady={ editor => {
-            if (data) editor.setData(data)
-        }}
-      // I have no idea why this works. Lots of conflicting advice on stackoverflow  //
-      // https://stackoverflow.com/questions/74559310/uncaught-syntaxerror-the-requested-module-ckeditor5-build-ckeditor-js-does-n 
-      
-      config={{
-                simpleUpload: simpleUploadConfig(), 
-                image: {upload: {types: [ 'png', 'jpeg','gif' ]}}
-              }}
-    
-    />
-  )
-}
+const CKWrapper = ({ name, initialData, onChange }) => {
+    const editorRef = useRef(null);
+    const editorInstance = useRef(null); // Create a ref to hold the editor instance
+
+    useEffect(() => {
+        const initializeEditor = async () => {
+            if (editorRef.current && !editorInstance.current) { // Check if instance already exists
+                try {
+                    editorInstance.current = await Editor.create(editorRef.current);
+                    if (initialData) {
+                        editorInstance.current.setData(initialData);
+                    }
+
+                    editorInstance.current.model.document.on('change:data', () => {
+                        const data = editorInstance.current.getData();
+                        onChange(name, data); // Call the onChange handler with name
+                    });
+                } catch (error) {
+                    console.error('There was a problem initializing the editor.', error);
+                }
+            }
+        };
+
+        initializeEditor();
+
+        return () => {
+            if (editorInstance.current) {
+                editorInstance.current.destroy(); // Cleanup the editor instance on unmount
+                editorInstance.current = null; // Clear the reference
+            }
+        };
+    }, [initialData, onChange, name]);
+
+    return <div ref={editorRef} id={name}></div>;
+};
 
 export default CKWrapper;
