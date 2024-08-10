@@ -18,6 +18,7 @@ import {
     ImageInsertUI,
     CodeBlock,
         Code,
+        ImageResizeEditing, ImageResizeHandles,
     
     Table,
     Image,
@@ -45,7 +46,7 @@ class Editor extends ClassicEditor {
         ImageInsertUI,
         CodeBlock,
         Code,
-        
+        ImageResizeEditing, ImageResizeHandles,
         TableToolbar,
        
     ];
@@ -58,11 +59,33 @@ class Editor extends ClassicEditor {
                 '|', 'link', 'insertTable', 'blockQuote',
                 '|', 'bulletedList', 'numberedList', 'outdent', 'indent',
                 '|', 'Code', 'CodeBlock',
-                '|', 'ImageUpload',
+                '|', 'ImageUpload', 'ImageResizeEditing', 'ImageResizeHandles' ,
                 '|', 'toggleImageCaption',
                 
             ]
         },
+        resizeOptions: [
+          {
+              name: 'resizeImage:original',
+              value: null,
+              label: 'Original'
+          },
+          {
+              name: 'resizeImage:25',
+              value: '25',
+              label: '25%'
+          },
+          {
+              name: 'resizeImage:50',
+              value: '50',
+              label: '50%'
+          },
+          {
+              name: 'resizeImage:75',
+              value: '75',
+              label: '75%'
+          }
+      ],
         image: {upload: {types: [ 'png', 'jpeg','gif' ]}},
         //simpleUpload: simpleUploadConfig(),
         
@@ -114,6 +137,8 @@ class Editor extends ClassicEditor {
                 })
                 .then(data => {
                     // Assuming the API returns the URL of the uploaded image
+                    const imgElement = `<img src="${data.url}" class="ck-small" alt="Uploaded Image">`;
+                
                     resolve({
                         default: data.url // Change 'url' to the actual key returned by your API
                     });
