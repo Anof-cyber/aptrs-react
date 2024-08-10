@@ -95,14 +95,14 @@ class Editor extends ClassicEditor {
             // Get the file to be uploaded
             this.loader.file.then((file) => {
                 const formData = new FormData();
-                formData.append('image', file); // Change 'image' to the field name your API expects
+                formData.append('upload', file); // Change 'image' to the field name your API expects
 
                 // Perform the API request
                 fetch('https://aptrsapi.souravkalal.tech/api/project/ckeditor/imageupload/', {
                     method: 'POST',
                     body: formData,
                     headers: {
-                      'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzI1ODgzNjQyLCJpYXQiOjE3MjMyOTE2NDIsImp0aSI6IjEwOTRkNGUwMzY2MTQwZDlhMGEzNGEzMDlkYWQwNjY3IiwidXNlcl9pZCI6N30.0_LoFke7R_EHvcByfFk1cLVQ4Vv6FIHQxHL2o5Bzo3I`, // Include the authorization bearer token
+                      'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzI1ODg2ODY3LCJpYXQiOjE3MjMyOTQ4NjcsImp0aSI6IjUzMmVmMmY3NmVmMDRkMjQ4MTMzNWYyMDdmMmVhNDViIiwidXNlcl9pZCI6MX0.AGvyw2Y67dTjNKQFUCvr3woW3AEA-fAgrUwPtf8zusA`, // Include the authorization bearer token
                       // You can add any other headers if needed
                   }
                 })
