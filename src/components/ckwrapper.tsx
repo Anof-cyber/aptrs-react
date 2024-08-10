@@ -16,6 +16,8 @@ import {
     List,
     Paragraph,
     ImageInsertUI,
+    CodeBlock,
+        Code,
     
     Table,
     Image,
@@ -41,6 +43,8 @@ class Editor extends ClassicEditor {
         Image,
         ImageUpload,
         ImageInsertUI,
+        CodeBlock,
+        Code,
         
         TableToolbar,
        
